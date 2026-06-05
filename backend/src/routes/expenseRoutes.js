@@ -5,7 +5,9 @@ const {
   createExpense,
   updateExpense,
   deleteExpense,
+  getSummary,
 } = require('../controllers/expenseController');
+router.get('/summary', getSummary);
 
 router.get('/', getExpenses);
 router.post('/', createExpense);
