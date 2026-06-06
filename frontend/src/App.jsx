@@ -1,6 +1,4 @@
-// for temporary purpose only, will be removed in future when we have proper UI
-// it is only for testing i have to test for the backend
-//again update thid App.jsx for commit 11 - still not complete file!
+// This is Almost complete file !
 import { useState, useEffect } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
@@ -30,6 +28,8 @@ function App() {
   const fetchExpenses = async () => {
     try {
       setLoading(true);
+      setError(null);//->i add this to clear previous error when we start fetching new data
+      //also this might be last change for this commit, i will update this file in future commits when we have more features to add(in future)
       const data = await getExpenses(filters);
       setExpenses(data);
     } catch (err) {
@@ -45,6 +45,7 @@ function App() {
 
   const handleCreate = async (formData) => {
     try {
+      setError(null);
       await createExpense(formData);
       fetchExpenses();
     } catch (err) {
@@ -54,6 +55,7 @@ function App() {
 
   const handleUpdate = async (formData) => {
     try {
+      setError(null);
       await updateExpense(editingExpense._id, formData);
       setEditingExpense(null);
       fetchExpenses();
@@ -64,6 +66,7 @@ function App() {
 
   const handleDelete = async (id) => {
     try {
+      setError(null); 
       await deleteExpense(id);
       fetchExpenses();
     } catch (err) {
@@ -75,7 +78,24 @@ function App() {
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
       <h1>Mini Expense Tracker</h1>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && (
+        <div style={{
+          background: '#fee2e2',
+          color: '#dc2626',
+          padding: '10px 16px',
+          borderRadius: '6px',
+          marginBottom: '16px',
+        }}>
+          {error}
+          <button
+            onClick={() => setError(null)}
+            style={{ marginLeft: '12px', background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', fontWeight: 'bold' }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
 
       <SummaryPanel />
 
