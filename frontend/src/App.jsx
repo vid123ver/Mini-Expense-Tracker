@@ -1,10 +1,13 @@
 // for temporary purpose only, will be removed in future when we have proper UI
 // it is only for testing i have to test for the backend
+//again update thid App.jsx for commit 11 - still not complete file!
 import { useState, useEffect } from 'react';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import FilterBar from './components/FilterBar';
 import SummaryPanel from './components/SummaryPanel';
+import CategoryChart from './components/CategoryChart';
+
 import { getFirstDayOfMonth, getToday } from './utils/formatDate';
 import {
   getExpenses,
@@ -76,6 +79,7 @@ function App() {
 
       <SummaryPanel />
 
+      <CategoryChart />
       <ExpenseForm
         onSubmit={editingExpense ? handleUpdate : handleCreate}
         editingExpense={editingExpense}
