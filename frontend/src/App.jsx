@@ -1,5 +1,6 @@
 // This is Almost complete file !
 import { useState, useEffect } from 'react';
+import { getSummary } from './services/expenseService';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
 import FilterBar from './components/FilterBar';
