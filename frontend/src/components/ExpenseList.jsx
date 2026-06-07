@@ -1,7 +1,5 @@
-// Table component that renders a list of transactions by mapping over the expenses array into individual rows.
-// It automatically displays a clean empty state message if no matching records are found.
-
 import ExpenseItem from './ExpenseItem';
+import { exportToCSV } from '../utils/exportCSV';
 
 function ExpenseList({ expenses, onEdit, onDelete }) {
   if (expenses.length === 0) {
@@ -14,6 +12,23 @@ function ExpenseList({ expenses, onEdit, onDelete }) {
 
   return (
     <div className="table-container">
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px' }}>
+        <button
+          onClick={() => exportToCSV(expenses)}
+          style={{
+            background: '#10b981',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            cursor: 'pointer',
+          }}
+        >
+          Export CSV
+        </button>
+      </div>
+
       <table>
         <thead>
           <tr>
@@ -35,6 +50,7 @@ function ExpenseList({ expenses, onEdit, onDelete }) {
           ))}
         </tbody>
       </table>
+
     </div>
   );
 }
