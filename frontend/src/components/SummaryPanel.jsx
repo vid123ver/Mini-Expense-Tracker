@@ -1,74 +1,43 @@
-import { useEffect, useState } from 'react';
-import { getSummary } from '../services/expenseService';
+// A dashboard panel component that displays quick card stats for monthly spending, categories used, and the highest purchase.
+// It maps data dynamically from the summary object and applies Tailwind CSS styling to present everything in a clean grid.
+
 import { formatCurrency } from '../utils/formatCurrency';
 import { formatDate } from '../utils/formatDate';
 
-function SummaryPanel() {
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+function StatCard({ label, value, sub, color }) {
+  return (
+    <div className={`bg-white rounded-2xl p-5 border border-slate-100 shadow-sm`}>
+      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{label}</p>
+      <p className={`text-2xl font-bold mt-1 ${color || 'text-slate-800'}`}>{value}</p>
+      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+    </div>
+  );
+}
 
-  const fetchSummary = async () => {
-    try {
-      setLoading(true);
-      const data = await getSummary();
-      setSummary(data);
-    } catch (err) {
-      setError('Failed to load summary');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSummary();
-  }, []);
-
-  if (loading) return <p>Loading summary...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+function SummaryPanel({ summary }) {
   if (!summary) return null;
 
   return (
-    <div className="summary-panel">
-      <h2>This Month's Summary</h2>
-
-      <div className="summary-cards">
-
-        <div className="summary-card">
-          <h3>Total Spent</h3>
-          <p>{formatCurrency(summary.totalThisMonth)}</p>
-        </div>
-
-        <div className="summary-card">
-          <h3>Highest Expense</h3>
-          {summary.highestExpense ? (
-            <>
-              <p>{formatCurrency(summary.highestExpense.amount)}</p>
-              <span>{summary.highestExpense.category} — {formatDate(summary.highestExpense.date)}</span>
-            </>
-          ) : (
-            <p>No expenses yet</p>
-          )}
-        </div>
-
+    <div className="space-y-3">
+      <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">This Month</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <StatCard
+          label="Total Spent"
+          value={formatCurrency(summary.totalThisMonth)}
+          color="text-indigo-600"
+        />
+        <StatCard
+          label="Transactions"
+          value={summary.perCategory.reduce((a, b) => a + 1, 0)}
+          sub="categories used"
+        />
+        <StatCard
+          label="Highest Expense"
+          value={summary.highestExpense ? formatCurrency(summary.highestExpense.amount) : '—'}
+          sub={summary.highestExpense ? `${summary.highestExpense.category} · ${formatDate(summary.highestExpense.date)}` : 'No expenses yet'}
+          color="text-rose-500"
+        />
       </div>
-
-      <div className="per-category">
-        <h3>By Category</h3>
-        {summary.perCategory.length === 0 ? (
-          <p>No expenses this month</p>
-        ) : (
-          <ul>
-            {summary.perCategory.map((item) => (
-              <li key={item._id}>
-                <span>{item._id}</span>
-                <span>{formatCurrency(item.total)}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
     </div>
   );
 }
